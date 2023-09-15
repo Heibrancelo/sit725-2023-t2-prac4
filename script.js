@@ -1,33 +1,3 @@
-const cardList = [
-  {
-    title: "Kitten 2",
-    image: "images/kitten-2.jpeg",
-    link: "About Kitten 2",
-    desciption: "Demo desciption about kitten 2",
-  },
-  {
-    title: "Kitten 3",
-    image: "images/kitten-3.jpeg",
-    link: "About Kitten 3",
-    desciption: "Demo desciption about kitten 3",
-  },
-];
-
-// Click me Button 
-const clickMe = () => {
-  alert("Thanks for clicking me. Hope you have a nice day!");
-};
-
-// Submit button
-const submitForm = () => {
-  let formData = {};
-  formData.first_name = $("#first_name").val();
-  formData.last_name = $("#last_name").val();
-  formData.password = $("#password").val();
-  formData.email = $("#email").val();
-  console.log("Form Data Submitted: ", formData);
-};
-
 //Adding cards
 const addCards = (items) => {
   items.forEach((item) => {
@@ -55,11 +25,47 @@ const addCards = (items) => {
 };
 
 
+
+// Submit Form 
+const submitForm = () => {
+  let formData = {};
+  formData.first_name = $("#first_name").val();
+  formData.last_name = $("#last_name").val();
+  formData.password = $("#password").val();
+  formData.email = $("#email").val();
+
+  console.log("Form Data Submitted: ", formData);
+  postProject(formData);
+}
+
+
+function postProject(project) {
+  $.ajax({
+    url: "/api/project",
+    type: "POST",
+    data: project,
+    success: (result) => {
+      if (result.statusCode === 201) {
+        alert("Project is added.");
+      }
+    },
+  });
+}
+
+function getAllProjects() {
+  $.get("/api/project", (response) => {
+    if (response.statusCode === 200) {
+      addCards(response.data);
+    }
+  });
+}
+
 $(document).ready(function () {
   $(".materialboxed").materialbox();
-  $("#formSubmit").click(() => {
+  $("#submitForm").click(() => {
     submitForm();
   });
-  addCards(cardList);
+
   $(".modal").modal();
+  getAllProjects();
 });
